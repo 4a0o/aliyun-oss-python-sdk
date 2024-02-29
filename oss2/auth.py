@@ -94,6 +94,9 @@ class ProviderAuth(AuthBase):
          'x-oss-ac-source-ip', 'x-oss-ac-subnet-mask', 'x-oss-ac-vpc-id', 'x-oss-ac-forward-allow',
          'resourceGroup', 'style', 'styleName', 'x-oss-async-process', 'regionList', 'x-oss-write-get-object-response']
     )
+
+    def getstring2sign(self, req, bucket_name, key):
+        return self.__get_string_to_sign(req, bucket_name, key) 
         
     def _sign_request(self, req, bucket_name, key):
         credentials = self.credentials_provider.get_credentials()
@@ -128,7 +131,6 @@ class ProviderAuth(AuthBase):
             string_to_sign = self.__get_bytes_to_sign(req, bucket_name, key)
 
         logger.debug('Make signature: string to be signed = {0}'.format(string_to_sign))
-
         h = hmac.new(to_bytes(credentials.get_access_key_secret()), to_bytes(string_to_sign), hashlib.sha1)
         return utils.b64encode_as_string(h.digest())
 
